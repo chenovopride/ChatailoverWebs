@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>添加额度Key Verification</title>
+    <style>
+        /* Add this style block */
+        .selected {
+            background-color: #008CBA; /* Change color as per your preference */
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>券码验证页面</h1>
+    <label id="title"for="category">请选择bot购买的版本:</label>
+    <br><br>
+    <!-- setCategory 中的category 必须和txtfiles里面的目录名一样 -->
+    <label id="title"for="category">光夜bot:</label>
+    <br><br>
+    <button id="button55" type="button" onclick="setCategory('55_0',this)">55基础版</button>
+    <button id="button55" type="button" onclick="setCategory('55_1',this)">55主动版</button>
+    <button id="button55" type="button" onclick="setCategory('55_edu_50',this)">55单独50额度</button>
+    <button id="button55" type="button" onclick="setCategory('55_edu_100',this)">55单独100额度</button>
+    <button id="button55" type="button" onclick="setCategory('55_edu_200',this)">55单独200额度</button>
+    <!-- <button id="button55" type="button" onclick="setCategory('jika_55',this)">55季卡1400额度</button> -->
+    <br><br>
+    <button id="button77" type="button" onclick="setCategory('77_0',this)">77基础版</button>
+    <button id="button77"type="button" onclick="setCategory('77_1',this)">77主动版</button>
+    <button id="button55" type="button" onclick="setCategory('77_edu_50',this)">77单独50额度</button>
+    <button id="button55" type="button" onclick="setCategory('77_edu_100',this)">77单独100额度</button>
+    <button id="button55" type="button" onclick="setCategory('77_edu_200',this)">77单独200额度</button>
+    <!-- <button id="button55" type="button" onclick="setCategory('jika_77',this)">77季卡1400额度</button> -->
+    <br><br>
+    <button id="button11" type="button" onclick="setCategory('11_0',this)">11基础版</button>
+    <button id="button11" type="button" onclick="setCategory('11_1',this)">11主动版</button>
+    <button id="button55" type="button" onclick="setCategory('11_edu_50',this)">11单独50额度</button>
+    <button id="button55" type="button" onclick="setCategory('11_edu_100',this)">11单独100额度</button>
+    <button id="button55" type="button" onclick="setCategory('11_edu_200',this)">11单独200额度</button>
+    <!-- <button id="button55" type="button" onclick="setCategory('jika_11',this)">11季卡1400额度</button> -->
+    <br><br>
+    <button id="button66" type="button" onclick="setCategory('66_0',this)">66基础版</button>
+    <button id="button66" type="button" onclick="setCategory('66_1',this)">66主动版</button>
+    <button id="button66" type="button" onclick="setCategory('66_edu_50',this)">66单独50额度</button>
+    <button id="button66" type="button" onclick="setCategory('66_edu_100',this)">66单独100额度</button>
+    <button id="button66" type="button" onclick="setCategory('66_edu_200',this)">66单独200额度</button>
+    <!-- <button id="button55" type="button" onclick="setCategory('jika_66',this)">66季卡1400额度</button> -->
+    <br><br>
+    <button id="button00" type="button" onclick="setCategory('00_0',this)">00基础版</button>
+    <button id="button00" type="button" onclick="setCategory('00_1',this)">00主动版</button>
+    <button id="button00" type="button" onclick="setCategory('00_edu_50',this)">00单独50额度</button>
+    <button id="button00" type="button" onclick="setCategory('00_edu_100',this)">00单独100额度</button>
+    <button id="button00" type="button" onclick="setCategory('00_edu_200',this)">00单独200额度</button>
+    <!-- <button id="button55" type="button" onclick="setCategory('jika_00',this)">00季卡1400额度</button> -->
+    <br><br>
+    <label id="title"for="category">深空bot:</label>
+    <br><br>
+    <button id="button_xing" type="button" onclick="setCategory('xing_1',this)">⭐星星主动版</button>
+    <button id="button_xing" type="button" onclick="setCategory('xing_edu_50',this)">⭐星星单独50额度</button>
+    <button id="button_xing" type="button" onclick="setCategory('xing_edu_100',this)">⭐星星单独100额度</button>
+    <button id="button_xing" type="button" onclick="setCategory('xing_edu_200',this)">⭐星星单独200额度</button>
+    <br><br>
+    <button id="button_li" type="button" onclick="setCategory('li_1',this)">🍐梨子主动版</button>
+    <button id="button_li" type="button" onclick="setCategory('li_edu_50',this)">🍐梨子单独50额度</button>
+    <button id="button_li" type="button" onclick="setCategory('li_edu_100',this)">🍐梨子单独100额度</button>
+    <button id="button_li" type="button" onclick="setCategory('li_edu_200',this)">🍐梨子单独200额度</button>
+    <br><br>
+    <button id="button_yu" type="button" onclick="setCategory('yu_1',this)">🐟小鱼主动版</button>
+    <button id="button_yu" type="button" onclick="setCategory('yu_edu_50',this)">🐟小鱼单独50额度</button>
+    <button id="button_yu" type="button" onclick="setCategory('yu_edu_100',this)">🐟小鱼单独100额度</button>
+    <button id="button_yu" type="button" onclick="setCategory('yu_edu_200',this)">🐟小鱼单独200额度</button>
+    <br><br>
+    <!-- 这部分等小鱼bot上线了就可以再回复验证 -->
+    <!-- <br><br>
+    <label id="title"for="category">直播活动限定：请选择想体验的bot版本(感谢宝宝们的支持！)</label>
+    <br><br>
+    <button id="button55" type="button" onclick="setCategory('55_edu_30',this)">55体验版</button>
+    <button id="button77" type="button" onclick="setCategory('77_edu_30',this)">77体验版</button>
+    <button id="button11" type="button" onclick="setCategory('11_edu_30',this)">11体验版</button>
+    <button id="button66" type="button" onclick="setCategory('66_edu_30',this)">66体验版</button>
+    <button id="button00" type="button" onclick="setCategory('00_edu_30',this)">00体验版</button>
+    <br><br>
+    <button id="button00" type="button">小鱼bot预计会在三月底/四月初上线，敬请期待~</button> -->
+    <br><br>
+    <label for="key">您的券码(key)是:</label><br>
+    <input type="text" id="key" name="key" disabled><br><br>
+
+    <label for="qq">您的qq号是:</label><br>
+    <label for="qq">* 请确保qq填写正确, 否则权限会加给其它qq:</label><br>
+    <input type="text" id="qq" name="qq" disabled><br><br>
+    <button type="button" onclick="verifyKey()" disabled>Verify</button>
+
+    <br><br>
+
+    <h1>额度查询</h1>    
+    <label>【新功能】如果购买后你想要查询自己的购买时间、剩余额度情况，请： </label>
+    <a href="http://101.42.170.17:5001/">点击这里👈</a>   
+    <script src="/static/js/script.js"></script>
+</body>
+</html>

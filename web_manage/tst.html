@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台管理补偿网站</title>
+</head>
+<body>
+    <h1>后台管理补偿网站</h1>
+
+    <h2>对所有用户补偿</h2>
+    <form action="/compensate/all" method="post">
+        <label for="masterNameAll">男主名:</label>
+        <input type="text" id="masterNameAll" name="masterNameAll" required><br>
+        
+        <label for="userAll">用户:</label>
+        <input type="text" id="userAll" name="userAll" value="all" readonly><br>
+        
+        <label for="daysAll">天数:</label>
+        <input type="number" id="daysAll" name="daysAll" required><br>
+        
+        <label for="amountAll">额度:</label>
+        <input type="number" id="amountAll" name="amountAll" required><br>
+        
+        <input type="submit" value="提交">
+    </form>
+
+    <h2>对特定用户补偿</h2>
+    <form action="/compensate/user" method="post">
+        <label for="masterNameUser">男主名:</label>
+        <input type="text" id="masterNameUser" name="masterNameUser" required><br>
+        
+        <label for="userId">用户:</label>
+        <input type="text" id="userId" name="userId" required><br>
+        
+        <label for="daysUser">天数:</label>
+        <input type="number" id="daysUser" name="daysUser" required><br>
+        
+        <label for="amountUser">额度:</label>
+        <input type="number" id="amountUser" name="amountUser" required><br>
+        
+        <input type="submit" value="提交">
+    </form>
+
+    <h2>节假日重置体验额度</h2>
+    <form action="/reset/holiday" method="post">
+        <label for="masterNameReset">男主名:</label>
+        <input type="text" id="masterNameReset" name="masterNameReset" required><br>
+        
+        <input type="submit" value="提交">
+    </form>
+
+    <h2>查看用户自定义情况</h2>
+    <form action="/userinfo" method="post">
+        <label for="masterNameInfo">男主名:</label>
+        <input type="text" id="masterNameInfo" name="masterNameInfo" required><br>
+        
+        <label for="userInfoId">用户:</label>
+        <input type="text" id="userInfoId" name="userInfoId" required><br>
+        
+        <input type="submit" value="提交">
+    </form>
+
+    <h2>查看用户购买功能情况</h2>
+    <form action="/userlimit" method="post">
+        <label for="masterNameLimit">男主名:</label>
+        <input type="text" id="masterNameLimit" name="masterNameLimit" required><br>
+        
+        <label for="userLimitId">用户:</label>
+        <input type="text" id="userLimitId" name="userLimitId" required><br>
+        
+        <input type="submit" value="提交">
+    </form>
+
+    <h2>设置功能</h2>
+    <form action="/set/active" method="post">
+        <label for="masterNameActive">男主名:</label>
+        <input type="text" id="masterNameActive" name="masterNameActive" required><br>
+        
+        <label for="userActiveId">用户:</label>
+        <input type="text" id="userActiveId" name="userActiveId" required><br>
+        
+        <input type="submit" value="设置为主动版">
+    </form>
+    <form action="/set/custom" method="post">
+        <label for="masterNameCustom">男主名:</label>
+        <input type="text" id="masterNameCustom" name="masterNameCustom" required><br>
+        
+        <label for="userCustomId">用户:</label>
+        <input type="text" id="userCustomId" name="userCustomId" required><br>
+        
+        <input type="submit" value="设置为定制版">
+    </form>
+
+    <h2>券码查找</h2>
+    <form action="/find/coupon" method="post">
+        <label for="couponCode">券码:</label>
+        <input type="text" id="couponCode" name="couponCode" required><br>
+        
+        <input type="submit" value="查找用户QQ">
+    </form>
+</body>
+</html>
