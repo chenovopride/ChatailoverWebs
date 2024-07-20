@@ -1,4 +1,6 @@
-
+'''
+已弃用
+'''
 
 from pymongo import MongoClient
 
