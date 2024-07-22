@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户查询网站</title>
+    <style>
+        .selected {
+            background-color: #95ace4;
+        }
+
+        #clearButton {
+            display: none;
+        }
+    </style>
+    <script src="/static/script.js"></script>
+</head>
+<body>
+    <h1>请选择bot购买版本</h1>
+    <label id="title"for="category">光夜bot:</label>
+    <br></br>
+    <button class="version-button" data-version="查理苏" onclick="selectVersion('db55')">查理苏</button>
+    <button class="version-button" data-version="萧逸" onclick="selectVersion('db11')">萧逸</button>
+    <button class="version-button" data-version="陆沉" onclick="selectVersion('db66')">陆沉</button>
+    <button class="version-button" data-version="齐司礼" onclick="selectVersion('db77')">齐司礼</button>
+    <button class="version-button" data-version="夏鸣星" onclick="selectVersion('db00')">夏鸣星</button>
+    <br></br>
+    <label id="title"for="category">深空bot:</label>
+    <br></br>
+    <button class="version-button" data-version="沈星回" onclick="selectVersion('dbSXH')">沈星回</button>
+    <button class="version-button" data-version="黎深" onclick="selectVersion('dbLS')">黎深</button>
+    <button class="version-button" data-version="祁煜" onclick="selectVersion('dbQY')">祁煜</button>
+    <!--
+    <button class="version-button" data-version="夏以昼" onclick="selectVersion('dbXYZ')">夏以昼</button>
+    <button class="version-button" data-version="秦彻" onclick="selectVersion('dbQC')">秦彻</button>
+    -->
+    <br></br>
+    <label for="data">请输入您的qq：</label>
+    <input type="text" id="data" name="data" required>
+    <br><br>
+    <label for="queryType">选择查询类型：</label>
+    <select id="queryType" name="queryType">
+        <option value="purchase">购买信息</option>
+        <option value="feature">功能信息</option>
+        <option value="all">所有信息</option>
+    </select>
+    <button onclick="handleQuery()">查询</button>
+    <button onclick="refreshData()">清空</button>
+
+    <div id="output"></div>
+
+    <button id="clearButton" onclick="clearData()">清除查询结果</button>
+    <h1>额度添加</h1>    
+    <label>【新功能】如果查询后你想返回购买月卡或添加bot额度，请： </label>
+    <a href="http://101.42.170.17:5000">点击这里👈</a>   
+</body>
+</html>
