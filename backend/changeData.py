@@ -183,7 +183,7 @@ def get_limit(collection, _type: str, qq: str):
 
 # limit/rate 方面：一般是修改为固定值（购买月卡等操作） 改 rate & free_rate
 def change_limit(collection, _type: str, qq: str, rate: int):
-    """更新额度限制"""
+    """修改额度限制为rate"""
     collection.update_one(
         {"type": _type, "id": qq},
         {"$set": {"type": _type, "id": qq, "rate": rate}},
@@ -191,7 +191,7 @@ def change_limit(collection, _type: str, qq: str, rate: int):
     )
 
 def change_free_limit(collection, _type: str, qq: str, rate: int):
-    """更新额度限制"""
+    """修改额度限制为rate"""
     collection.update_one(
         {"type": _type, "id": qq},
         {"$set": {"type": _type, "id": qq, "free_rate": rate}},
@@ -202,10 +202,12 @@ def change_free_limit(collection, _type: str, qq: str, rate: int):
 def add_limit(collection, _type: str, qq: str, amount: int):
     '''增加或者减少用户的额度限制rate，需要注意rate最小为0'''
     ori_usage = collection.find_one({"type": _type, "id": qq})
-    if ori_usage.get('rate', 0) + amount <0:
-        new_limit = 0
-    else:
-        new_limit = ori_usage.get('rate', 0) + amount
+    # 如果没有找到对应的记录，则初始化rate为0
+    ori_rate = ori_usage.get('rate', 0) if ori_usage else 0
+    # 计算新的额度限制
+    new_limit = max(ori_rate + amount, 0)
+    
+    # 更新数据库中的额度限制
     collection.update_one(
         {"type": _type, "id": qq},
         {"$set": {"type": _type, "id": qq, "rate": new_limit}},
@@ -215,10 +217,11 @@ def add_limit(collection, _type: str, qq: str, amount: int):
 def add_free_limit(collection, _type: str, qq: str, amount: int):
     '''增加或者减少用户的免费版额度限制free_rate，需要注意free_rate最小为0'''
     ori_usage = collection.find_one({"type": _type, "id": qq})
-    if ori_usage.get('free_rate', 0) + amount <0:
-        new_limit = 0
-    else:
-        new_limit = ori_usage.get('free_rate', 0) + amount
+    # 如果没有找到对应的记录，则初始化rate为0
+    ori_rate = ori_usage.get('free_rate', 0) if ori_usage else 0
+    # 计算新的额度限制
+    new_limit = max(ori_rate + amount, 0)
+    # 更新数据库中的额度限制
     collection.update_one(
         {"type": _type, "id": qq},
         {"$set": {"type": _type, "id": qq, "free_rate": new_limit}},
@@ -237,18 +240,42 @@ def calculate_date(date):
     date_diff = date_1 - date_buy
     return date_diff.days
 
-def change_date(collection, _type: str, qq: str, date = None, amount = 0):
 
-    if date == None and amount == 0:
-        return 
-    if date == None:
-        date = datetime.date.today()
+def change_date(collection, _type: str, qq: str, date = 'today', amount = 31,  add_scheme = 'cover'):
+    '''
+    修改用户的购买信息。
+    add_scheme: default=cover，可选项：cover， extend
+    amount: 天数
+    date：default= 'today' 代表更新为今日时间
+
+    当 add_scheme = cover(default), date = None, amount = 31代表购买了月卡天数设置为从今天开始的31天
+    当 add_scheme = extend, date = None, amount = 10, 代表在原本的基础上延长10天
+    '''
+    if date not in [None, 'today'] :
+        raise Exception(f'date参数错误，date可选项有： None, today')
+    if add_scheme not in ["cover", "extend"]:
+        raise Exception(f'add_scheme参数错误，add_scheme可选项有："cover", "extend"')
+    if date == 'today' and amount == 0:
+        raise Exception(f'fuction 参数错误，您传入的date={date}, amount={amount}不在可选项中')
 
     ori = collection.find_one({"type": _type, "id": qq})
-    ori_days = ori.get('days', 31)
+    # 如果没有找到对应的记录，则初始化date为今天
+    ori_date = ori.get('date', datetime.date.today()) if ori else datetime.date.today()
+    ori_days = ori.get('days', 31) if ori else 0
+
+    if add_scheme=='cover':
+        new_days = 31
+    else:
+        new_days = ori_days +amount
+    
+    if date == 'today':
+        new_date = datetime.date.today()
+    else:
+        new_date = ori_date
+
     collection.update_one(
         {"type": _type, "id": qq},
-        {"$set": {"type": _type, "id": qq, "date": date, "days": ori_days + amount}},
+        {"$set": {"type": _type, "id": qq, "date": new_date, "days": new_days}},
         upsert=True,
     )
 
@@ -281,7 +308,20 @@ def add_free_usage(collection, _type: str, qq: str, amount: int):
 
 # 功能方面：修改功能权限
 def add_function_permission(collection, _type: str, qq: str, fuction: str):
-    ''' 添加某个功能为 有权限'''
+    ''' 添加某个功能为 有权限 默认值："auto_message": 0,
+            "custom_identity":1,
+            "custom_action":1,
+            "voice":0,
+            "sing":0,
+            "meme":0,
+            "img_rec":0,
+            "custom_sched":0,
+            "menstrual":1,
+            "custom_sleep":0,
+            "auto_weather":0,
+            "group":0,
+            "game":1,
+            "custom":0 '''
     change_function_permission(collection, _type, qq, fuction, 1)
 
 def change_function_permission(collection, _type: str, qq: str, fuction: str, access: bool):

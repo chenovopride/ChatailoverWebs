@@ -38,3 +38,21 @@ client = MongoClient('mongodb://localhost:27017/')
 # newLimit(client)  # 写入新user_limit数据
 # changeFields(client)  # 改变/增加数据储存字段
 # # # 向xx数据库新增表————更改代码行xxcollection = xxdb['xx表']，即可新建，表名为‘xx表’
+
+
+import datetime
+
+
+# limit_db_55 = TinyDB(r"C:\Windows-quickstart-go-cqhttp-refs.tags.55bot\chatgpt\data\rate_limit.json")
+
+# # mon_card_remain_days(date_start_db_55, "18392440042")
+# _type = "\u597d\u53cb"
+# # wending_rate_55 = 600
+
+
+
+# rate_update(limit_db_55,usage_db_55, "1832292582", 601, _type)
+# date_update(date_start_db_55, "1832292582")
+
+a = datetime.date.today()
+print(a)

@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify,render_template
-from permission import *
+# from permission import *
 from wrapper import *
 from mongo_client_init import *
 app = Flask(__name__)
@@ -24,141 +24,51 @@ amount_mapping = {
     "edu_200": 200,
 }
 
-
+# 0724更新 待测试
 def write_jika(qq, category):
 
+    print("qq:",qq, "正在write_jika")
     _type = "\u597d\u53cb"
-    # 因为有人可能没有月卡直接买季卡，所以这里必须是01
-    jika_rate = 1401
-    print("qq:",qq, "正在添入【季卡】稳定版权限")
+    ''' 季卡逻辑：添加主动发消息 + 天数延长91天（不覆盖原本的购买信息）+ 添加1400额度'''
+    # 根据category获取相应的数据库和额度
+    if category[0:2] in cat_mapping:
+        nanzhu = cat_mapping[category[0:2]]
+        database = client[db_name_to_db[nanzhu]]
+        limit_collection = database['user_limit']
+        print(f"add {nanzhu} jika ...")
 
-    if category == "jika_55":
-        
-        # 更新购买日期, 天数在原本的基础上延长
-        jika_date_update(date_start_db_55, qq)
-        # 新函数，不能直接使用原本的rate_add_edu，原因是rate_add_edu如果
-        rate_add_edu_with_card(limit_db_55, usage_db_55, qq, jika_rate, _type)
-
-    elif category == "jika_00":
-        jika_date_update(date_start_db_00, qq)
-        rate_add_edu_with_card(limit_db_00, usage_db_00, qq, jika_rate, _type)
-
-
-    elif category == "jika_66":
-
-        jika_date_update(date_start_db_66, qq)
-        # 更新购买日期
-        rate_add_edu_with_card(limit_db_66, usage_db_66, qq, jika_rate, _type)
-
-    elif category == "jika_77":
-        jika_date_update(date_start_db_77, qq)
-
-        rate_add_edu_with_card(limit_db_77, usage_db_77, qq, jika_rate, _type)
-
-    elif category == "jika_11":
-
-        jika_date_update(date_start_db_11, qq)
-
-        rate_add_edu_with_card(limit_db_11, usage_db_11, qq, jika_rate, _type)
-
+        # 添加主动发消息权限
+        add_function_permission(_type = _type, qq=qq, fuction='auto_message')
+        # 添加月卡天数和额度
+        # 其实这个就是add_date 可以再封装一下
+        change_date(limit_collection, _type, qq, None, 91, 'extend')
+        add_limit(limit_collection, _type, qq, 1400)
     else:
-        print("开发者错误，错误在 write_jika")
-
+        print(f"write_jika时遇到未知类别: {category}")
+        print("开发者 write_jika(qq, category) 错误")
+        
+# 0724 更新 待测试
 def write_permission(qq, category):
 
+    print("qq:",qq, "正在write_permission")
     _type = "\u597d\u53cb"
-    wending_rate_55 = 400
-    # wending_rate_55 = 600
-    # wending_rate_glm = 76000
-    # zhudong_rate_glm = 80000
-    wending_rate_ft = 400
-    zhudong_rate_520 = 401
-    print("qq:",qq, "正在添入稳定版权限")
 
-    #光夜bot月卡
-    if category == "Category5_0":
-        # 更新rate
-        # usage清0，并且额度变为月卡额度
-        rate_update(limit_db_55,usage_db_55, qq, wending_rate_55, _type)
-        # 更新购买日期
-        date_update(date_start_db_55, qq)
+    # 根据category获取相应的数据库和额度
+    if category[0:2] in cat_mapping:
+        nanzhu = cat_mapping[category[0:2]]
+        database = client[db_name_to_db[nanzhu]]
+        limit_collection = database['user_limit']
+        print(f"add {nanzhu} card...")
 
-    elif category == "Category5_1":
-        # 更新rate
-        rate_update(limit_db_55, usage_db_55, qq, zhudong_rate_520, _type)
-        # 更新购买日期
-        date_update(date_start_db_55, qq)
-
-    elif category == "Category0_0":
-        # 更新rate
-        rate_update(limit_db_00,usage_db_00, qq, wending_rate_ft, _type)
-        # 更新购买日期
-        date_update(date_start_db_00, qq)
-
-    elif category == "Category0_1":
-        # 更新rate
-        rate_update(limit_db_00,usage_db_00, qq, zhudong_rate_520, _type)
-        # 更新购买日期
-        date_update(date_start_db_00, qq)
-
-    elif category == "Category6_0":
-        # 更新rate
-        rate_update(limit_db_66,usage_db_66, qq, wending_rate_ft, _type)
-        # 更新购买日期
-        date_update(date_start_db_66, qq)
-
-    elif category == "Category6_1":
-        # 更新rate
-        rate_update(limit_db_66,usage_db_66, qq, zhudong_rate_520, _type)
-        # 更新购买日期
-        date_update(date_start_db_66, qq)
-
-    elif category == "Category7_0":
-        # 更新rate
-        rate_update(limit_db_77,usage_db_77, qq, wending_rate_ft, _type)
-        # 更新购买日期
-        date_update(date_start_db_77, qq)
-
-    elif category == "Category7_1":
-        # 更新rate
-        rate_update(limit_db_77,usage_db_77, qq, zhudong_rate_520, _type)
-        # 更新购买日期
-        date_update(date_start_db_77, qq)
-
-    elif category == "Category1_0":
-        # 更新rate
-        rate_update(limit_db_11,usage_db_11, qq, wending_rate_ft, _type)
-        # 更新购买日期
-        date_update(date_start_db_11, qq)
-
-    elif category == "Category1_1":
-        # 更新rate
-        rate_update(limit_db_11,usage_db_11, qq, zhudong_rate_520, _type)
-        # 更新购买日期
-        date_update(date_start_db_11, qq)
-
-    # 深空bot月卡：
-    #⭐
-    elif category == "CategoryXing":
-        # 更新rate
-        rate_update(limit_db_xing,usage_db_xing, qq, zhudong_rate_520, _type)
-        # 更新购买日期
-        date_update(date_start_db_xing, qq)
-    #🍐
-    elif category == "CategoryLi":
-        # 更新rate
-        rate_update(limit_db_li,usage_db_li, qq, zhudong_rate_520, _type)
-        # 更新购买日期
-        date_update(date_start_db_li, qq)
-    #🐟
-    elif category == "CategoryYu":
-        # 更新rate
-        rate_update(limit_db_yu,usage_db_yu, qq, zhudong_rate_520, _type)
-        # 更新购买日期
-        date_update(date_start_db_yu, qq)
-
+        if category[-1] == '1':
+            # 添加主动发消息权限
+            add_function_permission(_type = _type, qq=qq, fuction='auto_message')
+        # 添加月卡天数和额度
+        change_date(limit_collection, _type, qq, 'today', 31, 'cover')
+        change_limit(limit_collection, _type, qq, 400)
     else:
-        print("遇到了一些问题？请群内反馈~")
+        print(f"write_permission时遇到未知类别: {category}")
+        print("开发者 write_permission(qq, category) 错误")
 
 # 0718 修改的更为简明
 def add_edu(qq, category):
@@ -173,10 +83,9 @@ def add_edu(qq, category):
         database = client[db_name_to_db[nanzhu]]
         limit_collection = database['user_limit']
         print(f"add {nanzhu} edu...")
-
         for key, value in amount_mapping.items():
             if key in category:
-                change_limit(limit_collection, _type, qq, value)
+                add_limit(limit_collection, _type, qq, value)
                 # rate_add_edu(usage_db, date_start_db, limit_db, qq, _type, value)
     else:
         print(f"添加额度时遇到未知类别: {category}")
@@ -195,10 +104,11 @@ def verify():
     card_or_edu = "card"
 
     # 判断买的月卡还是额度：Replace the path below with the actual path to your txt files
-    if category[0:3] == 'Cat':
+    # 0724修改
+    if category[-2] == '_' and (category[-1] in ['0', '1']):
         file_path = f'txtfiles/{category}.txt'
         card_or_edu = "card"
-    elif category[0:4] == 'jika':
+    elif category[-4:-1] == 'jika':
         file_path = f'txtfiles/jika.txt'
         card_or_edu = "jika" 
     else:
