@@ -1,3 +1,8 @@
+import sys
+# 将父目录添加到系统路径
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from flask import Flask, render_template, request, jsonify
 from datetime import datetime
 # from route.route import databases
@@ -71,32 +76,36 @@ def query_balance():
     user_limit_collection = database['user_limit']
     user_info_collection = database['user_info']
 
-    print(f'Debug: user_limit_collection = {user_limit_collection}')
-    print(f'Debug: user_info_collection = {user_info_collection}')
+    # 服务器注释 
+    # print(f'Debug: user_limit_collection = {user_limit_collection}')
+    # print(f'Debug: user_info_collection = {user_info_collection}')
     
     if user_limit_collection is None or user_info_collection is None:
         return jsonify({'error': '集合不存在，请确认数据库配置'})
     
     # 查询user_limit表
     user_limit = user_limit_collection.find_one({"id": qq_id})
-    print('test',user_limit)
+    print('user_limit: ',user_limit)
     if not user_limit:
         return jsonify({'error': f'找不到qq用户{qq_id}的购买信息，请联系管理员确认购买情况'})
 
     result = {}
     
     if query_type in ['a']:
-        date_value = user_limit.get("date", datetime.now().strftime('%Y-%m-%d'))
+        date_value = user_limit.get("date", str(datetime.date.today()))
         count_value = user_limit.get("count", 0)
         rate_value = user_limit.get("rate", 0)
         yueka_days = user_limit.get("days", 0)
         
         # 获取当前日期
-        current_date = datetime.now().strftime('%Y-%m-%d')
+        current_date = str(datetime.date.today())
         date_format = "%Y-%m-%d"
-        date_now = datetime.strptime(current_date, date_format).date()
-        date_bought = datetime.strptime(date_value, date_format).date() if date_value else date_now
+        date_now = datetime.datetime.strptime(current_date, date_format).date()
+        date_bought = datetime.datetime.strptime(date_value, date_format).date() if date_value else date_now
         days_passed = (date_now - date_bought).days
+
+        # calculate_date(date)
+
         if yueka_days is not None:
             res_date = max(0, yueka_days - days_passed)
         else:
@@ -129,16 +138,16 @@ def query_balance():
             })
 
     if query_type in ['c']:
-        date_value = user_limit.get("date", datetime.now().strftime('%Y-%m-%d'))
+        date_value = user_limit.get("date", str(datetime.date.today()))
         count_value = user_limit.get("count", 0)
         rate_value = user_limit.get("rate", 0)
         yueka_days = user_limit.get("days", 0)
         
         # 获取当前日期
-        current_date = datetime.now().strftime('%Y-%m-%d')
+        current_date = str(datetime.date.today())
         date_format = "%Y-%m-%d"
-        date_now = datetime.strptime(current_date, date_format).date()
-        date_bought = datetime.strptime(date_value, date_format).date() if date_value else date_now
+        date_now = datetime.datetime.strptime(current_date, date_format).date()
+        date_bought = datetime.datetime.strptime(date_value, date_format).date() if date_value else date_now
         days_passed = (date_now - date_bought).days
         if yueka_days is not None:
             res_date = max(0, yueka_days - days_passed)
@@ -174,7 +183,7 @@ def query_balance():
 
         # 这里print显示排序成功了也对result重新赋值了，但是最后网页显示的结果却依然乱序？
         result = ordered_result
-        print(result)
+        # print(result)
     
     if not result:
         return jsonify({'error': '没有找到符合查询条件的数据'})

@@ -11,7 +11,7 @@ import sys
 import logging
 
 # 这里设置数据库后端
-BACKEND = 'tinydb'
+BACKEND = 'mongodb'
 
 # 设置日志记录
 logging.basicConfig(
@@ -123,9 +123,9 @@ else:
 
     st.header('券码查找（还未上线请勿使用）')
     coupon_code = st.text_input('券码')
-    if st.button('查找用户QQ'):
-        user = find_coupon_user(coupon_code)
-        st.info(user)
+    # if st.button('查找用户QQ'):
+    #     user = find_coupon_user(coupon_code)
+    #     st.info(user)
     
 
     

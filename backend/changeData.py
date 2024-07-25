@@ -181,6 +181,14 @@ def get_limit(collection, _type: str, qq: str):
 
 '''
 
+def increase_all_days(collection, amount):
+    collection.update_many({}, {'$inc': {'days': amount}})
+    return True
+
+def increase_all_rate(collection, amount):
+    collection.update_many({}, {'$inc': {'rate': amount}})
+    return True
+
 # limit/rate 方面：一般是修改为固定值（购买月卡等操作） 改 rate & free_rate
 def change_limit(collection, _type: str, qq: str, rate: int):
     """修改额度限制为rate"""
