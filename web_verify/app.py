@@ -1,7 +1,16 @@
+import sys
+# 将父目录添加到系统路径
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append("..")
+
 from flask import Flask, request, jsonify,render_template
 # from permission import *
-from wrapper import *
+# from wrapper import *
 from mongo_client_init import *
+import time
+from backend.changeData import *
+
 app = Flask(__name__)
 
 # 定义数据库和类别的映射
@@ -38,7 +47,7 @@ def write_jika(qq, category):
         print(f"add {nanzhu} jika ...")
 
         # 添加主动发消息权限
-        add_function_permission(_type = _type, qq=qq, fuction='auto_message')
+        add_function_permission(limit_collection, _type = _type, qq=qq, fuction='auto_message')
         # 添加月卡天数和额度
         # 其实这个就是add_date 可以再封装一下
         change_date(limit_collection, _type, qq, None, 91, 'extend')
@@ -62,7 +71,7 @@ def write_permission(qq, category):
 
         if category[-1] == '1':
             # 添加主动发消息权限
-            add_function_permission(_type = _type, qq=qq, fuction='auto_message')
+            add_function_permission(limit_collection, _type = _type, qq=qq, fuction='auto_message')
         # 添加月卡天数和额度
         change_date(limit_collection, _type, qq, 'today', 31, 'cover')
         change_limit(limit_collection, _type, qq, 400)
@@ -106,13 +115,13 @@ def verify():
     # 判断买的月卡还是额度：Replace the path below with the actual path to your txt files
     # 0724修改
     if category[-2] == '_' and (category[-1] in ['0', '1']):
-        file_path = f'txtfiles/{category}.txt'
+        file_path = f'web_verify/txtfiles/{category}.txt'
         card_or_edu = "card"
     elif category[-4:-1] == 'jika':
-        file_path = f'txtfiles/jika.txt'
+        file_path = f'web_verify/txtfiles/jika.txt'
         card_or_edu = "jika" 
     else:
-        file_path = f'txtfiles/edu_keys_verify/{category}.txt'
+        file_path = f'web_verify/txtfiles/edu_keys_verify/{category}.txt'
         card_or_edu = "edu"
 
     # 打开对应的券的数据库
@@ -120,7 +129,7 @@ def verify():
         with open(file_path, 'r') as file:
             keys = file.read().splitlines()
     except FileNotFoundError:
-        print("开发者错误，无key文件路径！！")
+        print(f"开发者错误，无key文件路径！！{file_path}")
         return jsonify({'error': 'Invalid category'}), 400
 
     if key in keys:

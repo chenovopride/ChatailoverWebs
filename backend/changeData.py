@@ -71,14 +71,14 @@ limit_data_default = {
 '''
 
 # 向xxDB的Info表里插入新数据：按需自定义待插入的数据库
-def newInfo(client, user_qq= "default", user_name= "你的女朋友",user_info = "一名设计师", db_name = '00', info_data = None):
+def newInfo(info_collection, user_qq= "default", user_name= "你的女朋友",user_info = "一名设计师", info_data = None):
     '''
     db_name: default=='00'。可选值见db_name_to_db定义。
     info_data: 需要被插入的新数据，none则插入测试数据。
     '''
-    # 连接男主数据库
-    database = client[db_name_to_db[db_name]]
-    info_collection = database['user_info']
+    # # 连接男主数据库
+    # database = client[db_name_to_db[db_name]]
+    # info_collection = database['user_info']
 
     # 设置user_info表插入值
     if info_data == None:
@@ -113,14 +113,14 @@ def newInfo(client, user_qq= "default", user_name= "你的女朋友",user_info =
 
 
 # 向xxDB的Limit表里插入新数据：按需自定义待插入的数据库
-def newLimit(client, user_qq= "default", type = "\u597d\u53cb", db_name = '00', limit_data = None):
+def newLimit(limit_collection, user_qq= "default", type = "\u597d\u53cb",limit_data = None):
     '''
     db_name: default=='00'。可选值见db_name_to_db定义。
     limit_data: 需要被插入的新数据，none则插入测试数据。
     '''
-    # 连接男主数据库
-    database = client[db_name_to_db[db_name]]
-    limit_collection = database['user_limit']
+    # # 连接男主数据库
+    # database = client[db_name_to_db[db_name]]
+    # limit_collection = database['user_limit']
 
     # 设置user_limit表插入值
     if limit_data == None:
@@ -138,7 +138,7 @@ def newLimit(client, user_qq= "default", type = "\u597d\u53cb", db_name = '00', 
             # 这里开始就是功能信息，bool值，仅有01
             "auto_message": 0,
             "custom_identity":1,
-            "custom_action":1,
+            "custom_action":0, # 0725 自定义动作描述由于目前只给定制版用户，所以关闭默认权限
             "voice":0,
             "sing":0,
             "meme":0,
@@ -168,10 +168,10 @@ def newLimit(client, user_qq= "default", type = "\u597d\u53cb", db_name = '00', 
 def get_limit(collection, _type: str, qq: str):
     """获取限制"""
     entity = collection.find_one({"type": _type, "id": qq})
-    # TODO bot 后端这里要改，找不到信息目前的后端应该init用户的新信息
-    # 这个情况是 找不到用户的购买信息，相当于还是默认用户/未使用bot的用户，于是返回默认的限额，这里的使用量要设置未0
+    # 这个情况是 找不到用户的购买信息，相当于还是默认用户/未使用bot的用户，新建一个
     if entity is None and qq != "默认":
-        return collection.find_one({"type": _type, "id": "默认"})
+        entity = newLimit(collection, qq, _type)
+        return entity
     # 返回完整的数据结构
     return entity
 
@@ -184,6 +184,11 @@ def get_limit(collection, _type: str, qq: str):
 # limit/rate 方面：一般是修改为固定值（购买月卡等操作） 改 rate & free_rate
 def change_limit(collection, _type: str, qq: str, rate: int):
     """修改额度限制为rate"""
+    entity = collection.find_one({"type": _type, "id": qq})
+    # 这个情况是 找不到用户的购买信息，相当于还是默认用户/未使用bot的用户，新建一个
+    if entity == None:
+        entity = newLimit(collection, qq, _type)
+    
     collection.update_one(
         {"type": _type, "id": qq},
         {"$set": {"type": _type, "id": qq, "rate": rate}},
@@ -192,6 +197,11 @@ def change_limit(collection, _type: str, qq: str, rate: int):
 
 def change_free_limit(collection, _type: str, qq: str, rate: int):
     """修改额度限制为rate"""
+    entity = collection.find_one({"type": _type, "id": qq})
+    # 这个情况是 找不到用户的购买信息，相当于还是默认用户/未使用bot的用户，新建一个
+    if entity == None:
+        entity = newLimit(collection, qq, _type)
+
     collection.update_one(
         {"type": _type, "id": qq},
         {"$set": {"type": _type, "id": qq, "free_rate": rate}},
@@ -201,9 +211,14 @@ def change_free_limit(collection, _type: str, qq: str, rate: int):
 # limit方面的 增加固定值（适用于额度补偿）
 def add_limit(collection, _type: str, qq: str, amount: int):
     '''增加或者减少用户的额度限制rate，需要注意rate最小为0'''
-    ori_usage = collection.find_one({"type": _type, "id": qq})
+
+    entity = collection.find_one({"type": _type, "id": qq})
+    # 这个情况是 找不到用户的购买信息，相当于还是默认用户/未使用bot的用户，新建一个
+    if entity == None:
+        entity = newLimit(collection, qq, _type)
+
     # 如果没有找到对应的记录，则初始化rate为0
-    ori_rate = ori_usage.get('rate', 0) if ori_usage else 0
+    ori_rate = entity.get('rate', 0) if entity else 0
     # 计算新的额度限制
     new_limit = max(ori_rate + amount, 0)
     
@@ -216,9 +231,14 @@ def add_limit(collection, _type: str, qq: str, amount: int):
 
 def add_free_limit(collection, _type: str, qq: str, amount: int):
     '''增加或者减少用户的免费版额度限制free_rate，需要注意free_rate最小为0'''
-    ori_usage = collection.find_one({"type": _type, "id": qq})
+
+    entity = collection.find_one({"type": _type, "id": qq})
+    # 这个情况是 找不到用户的购买信息，相当于还是默认用户/未使用bot的用户，新建一个
+    if entity == None:
+        entity = newLimit(collection, qq, _type)
+
     # 如果没有找到对应的记录，则初始化rate为0
-    ori_rate = ori_usage.get('free_rate', 0) if ori_usage else 0
+    ori_rate = entity.get('free_rate', 0) if entity else 0
     # 计算新的额度限制
     new_limit = max(ori_rate + amount, 0)
     # 更新数据库中的额度限制
@@ -258,10 +278,14 @@ def change_date(collection, _type: str, qq: str, date = 'today', amount = 31,  a
     if date == 'today' and amount == 0:
         raise Exception(f'fuction 参数错误，您传入的date={date}, amount={amount}不在可选项中')
 
-    ori = collection.find_one({"type": _type, "id": qq})
+    entity = collection.find_one({"type": _type, "id": qq})
+    # 这个情况是 找不到用户的购买信息，相当于还是默认用户/未使用bot的用户，新建一个
+    if entity == None:
+        entity = newLimit(collection, qq, _type)
+    
     # 如果没有找到对应的记录，则初始化date为今天
-    ori_date = ori.get('date', datetime.date.today()) if ori else datetime.date.today()
-    ori_days = ori.get('days', 31) if ori else 0
+    ori_date = entity.get('date', str(datetime.date.today())) if entity else str(datetime.date.today())
+    ori_days = entity.get('days', 31) if entity else 0
 
     if add_scheme=='cover':
         new_days = 31
@@ -269,7 +293,7 @@ def change_date(collection, _type: str, qq: str, date = 'today', amount = 31,  a
         new_days = ori_days +amount
     
     if date == 'today':
-        new_date = datetime.date.today()
+        new_date = str(datetime.date.today())
     else:
         new_date = ori_date
 
@@ -282,11 +306,16 @@ def change_date(collection, _type: str, qq: str, date = 'today', amount = 31,  a
 # usage方面：一般是增减固定值 改count & free_count
 def add_usage(collection, _type: str, qq: str, amount: int):
     '''增加或者减少用户的使用量，需要注意使用量最小为0'''
-    ori_usage = collection.find_one({"type": _type, "id": qq})
-    if ori_usage.get('count', 0) + amount <0:
+
+    entity = collection.find_one({"type": _type, "id": qq})
+    # 这个情况是 找不到用户的购买信息，相当于还是默认用户/未使用bot的用户，新建一个
+    if entity == None:
+        entity = newLimit(collection, qq, _type)
+
+    if entity.get('count', 0) + amount <0:
         new_usage = 0
     else:
-        new_usage = ori_usage.get('count', 0) + amount
+        new_usage = entity.get('count', 0) + amount
     collection.update_one(
         {"type": _type, "id": qq},
         {"$set": {"type": _type, "id": qq, "count": new_usage}},
@@ -295,11 +324,15 @@ def add_usage(collection, _type: str, qq: str, amount: int):
 
 def add_free_usage(collection, _type: str, qq: str, amount: int):
     '''增加或者减少用户的使用量，需要注意使用量最小为0'''
-    ori_usage = collection.find_one({"type": _type, "id": qq})
-    if ori_usage.get('free_count', 0) + amount <0:
+    entity = collection.find_one({"type": _type, "id": qq})
+    # 这个情况是 找不到用户的购买信息，相当于还是默认用户/未使用bot的用户，新建一个
+    if entity == None:
+        entity = newLimit(collection, qq, _type)
+
+    if entity.get('free_count', 0) + amount <0:
         new_usage = 0
     else:
-        new_usage = ori_usage.get('free_count', 0) + amount
+        new_usage = entity.get('free_count', 0) + amount
     collection.update_one(
         {"type": _type, "id": qq},
         {"$set": {"type": _type, "id": qq, "free_count": new_usage}},
@@ -343,6 +376,10 @@ def change_function_permission(collection, _type: str, qq: str, fuction: str, ac
     '''
     if fuction not in limit_data_default:
         raise Exception(f'fuction 参数错误，您传入的{fuction}不在可选项中')
+    
+    entity = collection.find_one({"type": _type, "id": qq})
+    if entity == None:
+        entity = newLimit(collection, qq, _type)
     
     collection.update_one(
         {"type": _type, "id": qq},
