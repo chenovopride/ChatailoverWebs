@@ -347,6 +347,32 @@ def add_free_usage(collection, _type: str, qq: str, amount: int):
         upsert=True,
     )
 
+def change_usage(collection, _type: str, qq: str, rate: int):
+    """修改usage限制为rate"""
+    entity = collection.find_one({"type": _type, "id": qq})
+    # 这个情况是 找不到用户的购买信息，相当于还是默认用户/未使用bot的用户，新建一个
+    if entity == None:
+        entity = newLimit(collection, qq, _type)
+    
+    collection.update_one(
+        {"type": _type, "id": qq},
+        {"$set": {"type": _type, "id": qq, "count": rate}},
+        upsert=True,
+    )
+
+def change_free_usage(collection, _type: str, qq: str, rate: int):
+    """修改free usage限制为rate"""
+    entity = collection.find_one({"type": _type, "id": qq})
+    # 这个情况是 找不到用户的购买信息，相当于还是默认用户/未使用bot的用户，新建一个
+    if entity == None:
+        entity = newLimit(collection, qq, _type)
+    
+    collection.update_one(
+        {"type": _type, "id": qq},
+        {"$set": {"type": _type, "id": qq, "free_count": rate}},
+        upsert=True,
+    )
+
 # 功能方面：修改功能权限
 def add_function_permission(collection, _type: str, qq: str, fuction: str):
     ''' 添加某个功能为 有权限 默认值："auto_message": 0,

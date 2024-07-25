@@ -326,11 +326,14 @@ def old_merge_user_limit(client, bot_name = '00'):
         # 获得原始的 date
         date_for_qq = date_db.get(q.fragment({"id": user_qq}))
         if date_for_qq == None:
-            user_date = "2024-06-29"
+            user_date = "2024-07-25"
             user_days = 35
         else:
             user_date = date_for_qq["date"]
-            user_days = date_for_qq["left"]
+            if "left" in date_for_qq:
+                user_days = date_for_qq["left"]
+            else:
+                user_days = 35
         print(f'    user_date为{user_date}...')
         print(f'    user_days为{user_days}...')
 
@@ -346,7 +349,7 @@ def old_merge_user_limit(client, bot_name = '00'):
             "wd_key": 'wd_key',
             "auto_message": 0,
             "custom_identity":1,
-            "custom_action":1,
+            "custom_action":0,
             "voice":0,
             "sing":0,
             "meme":0,
@@ -359,8 +362,10 @@ def old_merge_user_limit(client, bot_name = '00'):
             "game":1,
             "custom":0
         }
-        
-        newLimit(client, db_name = bot_name, limit_data = user_new_limit)
+        database = client[db_name_to_db[bot_name]]
+        limit_collection = database['user_limit']
+
+        newLimit(limit_collection, user_qq, user_type, limit_data = user_new_limit)
 
         print(f'    用户：{user_qq} 的数据已经迁移到mongodb！')
         print('---')
@@ -416,6 +421,12 @@ def old_merge_user_info(client, bot_name = '00'):
                     "game_on": 1,
                     "version": "buy1"
                 }
+                database = client[db_name_to_db[bot_name]]
+                collection = database['user_info']
+
+                # newLimit(limit_collection, user_qq, user_type, limit_data = user_new_limit)
 
                 # 增加到 bot_name 新的数据库中
-                newInfo(client, db_name = bot_name, info_data = info_data)
+                newInfo(collection, user_qq, info_data = info_data)
+
+
