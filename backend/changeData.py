@@ -181,6 +181,26 @@ def get_limit(collection, _type: str, qq: str):
 
 '''
 
+def add_all_access(collection, fuction):
+    '''
+    fuction可选项、默认值："auto_message": 0,
+            "custom_identity":1,
+            "custom_action":1,
+            "voice":0,
+            "sing":0,
+            "meme":0,
+            "img_rec":0,
+            "custom_sched":0,
+            "menstrual":1,
+            "custom_sleep":0,
+            "auto_weather":0,
+            "group":0,
+            "game":1,
+            "custom":0 
+    '''
+    collection.update_many({}, {'$set': {fuction: 1}})
+    return True
+
 def increase_all_days(collection, amount):
     collection.update_many({}, {'$inc': {'days': amount}})
     return True
