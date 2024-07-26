@@ -8,6 +8,11 @@ from mongo_client_init import *
 
 # print('1')
 
+# database = client[db_name_to_db['00']]
+# collection = database['user_limit']
+# increase_all_days(collection, 1)
+# increase_all_rate(collection, 5)
+
 
 # # # 实用工具
 # old_merge_user_limit(client, bot_name = '00')

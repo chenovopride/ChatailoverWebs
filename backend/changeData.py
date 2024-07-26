@@ -198,14 +198,20 @@ def add_all_access(collection, fuction):
             "game":1,
             "custom":0 
     '''
+    # Initialize 'fuction' field to 0 if it's null
+    collection.update_many({fuction: None}, {'$set': {fuction: 0}})
     collection.update_many({}, {'$set': {fuction: 1}})
     return True
 
 def increase_all_days(collection, amount):
+    # Initialize 'days' field to 0 if it's null
+    collection.update_many({'days': None}, {'$set': {'days': 0}})
     collection.update_many({}, {'$inc': {'days': amount}})
     return True
 
 def increase_all_rate(collection, amount):
+    # Initialize 'days' field to 0 if it's null
+    collection.update_many({'rate': None}, {'$set': {'rate': 0}})
     collection.update_many({}, {'$inc': {'rate': amount}})
     return True
 
