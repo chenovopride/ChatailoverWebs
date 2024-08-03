@@ -61,7 +61,7 @@ else:
     if genre == "特定用户":
         user_id = st.text_input('用户qq')
 
-    option = st.selectbox("选择男主",("00", "11", "55", "66", "77", "qy🐟(勿用)", "ls🍐(勿用)", "sxh⭐(勿用)", "qc🐦‍⬛(勿用)", "xyz🍎(勿用)"))
+    option = st.selectbox("选择男主",("00", "11", "55", "66", "77", "qy", "ls", "sxh", "qc", "xyz"))
     days_all = st.number_input('天数',step =1)
     amount_all = st.number_input('额度(必须为10的倍数)',step =10)
     if st.button('提交用户补偿'):
