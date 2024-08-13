@@ -18,46 +18,63 @@ var selectedCategory = '';
             previousButton = button;  // Update the previousButton reference
         }
 
-        function verifyKey() {
-            var qq = document.getElementById('qq').value;
-            var key = document.getElementById('key').value;
-            //key值不能为空，qq只能输入5-13位数字且开头不为0
-            if (key.trim() === "") {
-                alert("密钥不能为空！");
-                return;
-            }
-            if (qq.trim() === "") {
-                alert("qq号不能为空！");
-                return;
-            }
-            if (!qq.match(/^[1-9]\d{4,12}$/)) {
-                alert("请检查qq号拼写~");
-                return;
-            }
-            fetch('/verify', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    qq: qq,
-                    category: selectedCategory,
-                    key: key,
-                }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.verified) {
-                    alert("密钥验证成功(●'u'●)~约等待1小时候即可正常对话。如不能正常对话，可以查询一下自己的额度，如果额度信息已经更新，说明额度添加正常，只是由于服务器性能不好导致更新缓慢，请耐心等待。最长需要等待一个晚上。\n\n p.s.券已经验证，后面【不可二次使用】啦");
-                } else {
-                    if(selectedCategory ==''){
-                        alert('请选择购买bot老公类型!');
-                    }else{
-                        alert('密钥【可能】验证失败了，请关闭弹窗后在本页面下方点击一下【额度查询】!如果查到了自己的购买信息，即为【验证成功】。\n\n 如果查不到请检查老公是否选择错误、密钥是否复制错误（可以再试一遍TAT？）');
-                    }
-                }
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+let confirmationNeeded = true;
+
+function verifyKey() {
+    var qq = document.getElementById('qq').value;
+    var key = document.getElementById('key').value;
+
+    // key值不能为空，qq只能输入5-13位数字且开头不为0
+    if (key.trim() === "") {
+        alert("密钥不能为空！");
+        return;
+    }
+    if (qq.trim() === "") {
+        alert("qq号不能为空！");
+        return;
+    }
+    if (!qq.match(/^[1-9]\d{4,12}$/)) {
+        alert("请检查qq号拼写~");
+        return;
+    }
+
+    if (confirmationNeeded) {
+        // 显示二次确认对话框
+        const confirmation = confirm(`请确认您的账号信息:\n\nQQ号: ${qq}\n券码: ${key}\n如果QQ号输入错误会验证给其他用户，券码输入错误会无法验证。`);
+        if (confirmation) {
+            confirmationNeeded = false;
+            alert("信息确认成功，请再次点击Verify按钮进行验证。");
+        } else {
+            alert("操作已取消。");
         }
+        return;
+    }
+
+    // 进行验证操作
+    fetch('/verify', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            qq: qq,
+            category: selectedCategory,
+            key: key,
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.verified) {
+            alert("密钥验证成功(●'u'●)~约等待1小时候即可正常对话。如不能正常对话，可以查询一下自己的额度，如果额度信息已经更新，说明额度添加正常，只是由于服务器性能不好导致更新缓慢，请耐心等待。最长需要等待一个晚上。\n\n p.s.券已经验证，后面【不可二次使用】啦");
+        } else {
+            if(selectedCategory == ''){
+                alert('请选择购买bot老公类型!');
+            } else {
+                alert('密钥【可能】验证失败了，请关闭弹窗后在本页面下方点击一下【额度查询】!如果查到了自己的购买信息，即为【验证成功】。\n\n 如果查不到请检查老公是否选择错误、密钥是否复制错误（可以再试一遍TAT？）');
+            }
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
