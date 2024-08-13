@@ -80,6 +80,33 @@ else:
         else:
             st.error(f'补偿失败，额度必须为10的倍数。请重新填写',icon = '❗️')
 
+    st.header('开关用户功能权限')
+    user_id_fun = 'all'
+    genre = st.radio("开关某个特定用户还是某个男主的所有用户？",
+                        ["所有用户", "特定用户"],
+                        captions = ["请在下面选择男主", "请在下面选择男主，并输入用户qq"])
+    if genre == "特定用户":
+        user_id_fun = st.text_input('用户qq')
+    close_flage = st.radio("打开还是关闭？",["打开=1", "关闭=0"])
+
+    option_2 = st.selectbox("选择男主数据库",("00", "11", "55", "66", "77", "qy", "ls", "sxh", "qc", "xyz"))
+    fuction_name = st.selectbox("选择您要打开或者关闭的功能",("auto_message", "custom_identity", "custom_action", "voice", 
+                                                 "sing", "meme", "img_rec", "custom_sched", "menstrual", "custom_sleep",
+                                                 "auto_weather", "group", "game", "custom"))
+
+    if st.button('开关用户功能'):
+        logging.info(f'管理员开关用户功能：{user_id}')
+        status = compensate_function(option_2, user_id_fun, fuction_name, int(close_flage[-1]))
+        if status:
+            st.info(f'补偿成功!')
+            logging.info(f'管理员提交用户补偿：{user_id_fun}成功')
+        else:
+            if user_id_fun == 'all':
+                st.error(f'系统并发问题，请联系开发补偿',icon = '❗️')
+            else:
+                st.error(f'没有找到此用户信息，如果用户存在，请再试一次',icon = '❗️')
+            logging.info(f'管理员提交用户补偿：{user_id}成功')
+
     
     st.header('节假日重置20体验额度')
     st.write('未购买用户重置20体验额度, 购买的用户赠送20体验额度。')

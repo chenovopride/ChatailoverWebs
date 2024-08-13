@@ -7,6 +7,8 @@ from backend.changeData import *
 from backend_tinydb import *
 from mongo_client_init import *
 
+from loguru import logger
+
 '''CYX测试路径'''
 # date_start_db = TinyDB(r"D:\AILover\code\loveBot1.2\chatgpt\data\date_start.json")
 # usage_db = TinyDB(r"D:\AILover\code\loveBot1.2\chatgpt\data\rate_usage.json")
@@ -93,6 +95,24 @@ def compensate( man, user_id, days_all, amount_all, backend ='mongodb'):
         print('date_status and rate_status:', date_status ,rate_status)
         return (date_status and rate_status)
         
+def compensate_function(man, user_id, fuction, access, backend ='mongodb'):
+
+    if backend not in ['mongodb']:
+        print('backend设置错误！')
+        return False
+    
+    print('mongo后端:', db_name_to_db[man])
+    database = client[db_name_to_db[man]]
+    limit_collection = database['user_limit']
+
+    if user_id == 'all':
+        # 所有用户补偿
+        status = change_all_fuctions(limit_collection, access, fuction)
+    else:
+        logger.info(f"user_id: {user_id}")
+        status = change_function_permission(limit_collection, "好友", user_id, fuction, access)
+
+    return status
     
 def reset_holiday(game, gift_limit_count = 20, backend ='mongodb'):
     

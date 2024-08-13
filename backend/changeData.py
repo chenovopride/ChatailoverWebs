@@ -437,17 +437,22 @@ def change_function_permission(collection, _type: str, qq: str, fuction: str, ac
     if fuction not in limit_data_default:
         raise Exception(f'fuction 参数错误，您传入的{fuction}不在可选项中')
     
-    entity = collection.find_one({"type": _type, "id": qq})
+    entity = collection.find_one({"id": qq})
     if entity == None:
-        entity = newLimit(collection, qq, _type)
+        entity = newLimit(collection, qq)
     
     collection.update_one(
-        {"type": _type, "id": qq},
-        {"$set": {"type": _type, "id": qq, fuction: access}},
+        {"id": qq},
+        {"$set": {"id": qq, fuction: access}},
         upsert=True,
     )
+    return True
 
-
+def change_all_fuctions(collection, access:bool, function:str):
+    # 先初始化防止有的人这个function为none
+    collection.update_many({function: None}, {'$set': {function: 0}})
+    collection.update_many({}, {'$set': {function: access}})
+    return True
 
 '''
 4. 未来：对于个性化信息的增改
