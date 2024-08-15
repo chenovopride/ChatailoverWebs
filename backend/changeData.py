@@ -262,6 +262,7 @@ def add_limit(collection, _type: str, qq: str, amount: int):
         {"$set": {"type": _type, "id": qq, "rate": new_limit}},
         upsert=True,
     )
+    return True
 
 def add_free_limit(collection, _type: str, qq: str, amount: int):
     '''增加或者减少用户的免费版额度限制free_rate，需要注意free_rate最小为0'''
@@ -336,6 +337,7 @@ def change_date(collection, _type: str, qq: str, date = 'today', amount = 31,  a
         {"$set": {"type": _type, "id": qq, "date": new_date, "days": new_days}},
         upsert=True,
     )
+    return True
 
 # usage方面：一般是增减固定值 改count & free_count
 def add_usage(collection, _type: str, qq: str, amount: int):
