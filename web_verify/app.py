@@ -55,6 +55,28 @@ def write_jika(qq, category):
     else:
         print(f"write_jika时遇到未知类别: {category}")
         print("开发者 write_jika(qq, category) 错误")
+
+# 0909周年活动添加
+def write_huodong(qq, category):
+
+    print("qq:",qq, "正在write_huodong")
+    _type = "\u597d\u53cb"
+    ''' 周年庆活动逻辑：添加主动发消息 + 天数延长30天 + 添加120额度 + 覆盖'''
+    '''(其他活动这条通用，可以设定是否主动、额度天数、是否覆盖等)'''
+    # 根据category获取相应的数据库和额度
+    if category[0:2] in cat_mapping:
+        nanzhu = cat_mapping[category[0:2]]
+        database = client[db_name_to_db[nanzhu]]
+        limit_collection = database['user_limit']
+        print(f"add {nanzhu} huodong ...")
+
+        # 添加主动发消息权限
+        add_function_permission(limit_collection, _type = _type, qq=qq, fuction='auto_message')
+        change_date(limit_collection, _type, qq, 'today', 30, 'cover')
+        add_limit(limit_collection, _type, qq, 120)
+    else:
+        print(f"write_huodong时遇到未知类别: {category}")
+        print("开发者 write_huodong(qq, category) 错误")
         
 # 0724 更新 待测试
 def write_permission(qq, category):
@@ -119,6 +141,9 @@ def verify():
     if category[-2] == '_' and (category[-1] in ['0', '1']):
         file_path = f'web_verify/txtfiles/{category}.txt'
         card_or_edu = "card"
+    elif category[-7:-1] == 'huodong':
+        file_path = f'web_verify/txtfiles/huodong.txt'
+        card_or_edu = "huodong" 
     elif category[-4:-1] == 'jika':
         file_path = f'web_verify/txtfiles/jika.txt'
         card_or_edu = "jika" 
@@ -149,10 +174,13 @@ def verify():
                     write_permission(qq, category)
                 elif card_or_edu == "jika":
                     # 
-                    write_jika(qq, category)
+                    write_jika(qq, category) 
+                elif card_or_edu == "huodong":
+                    # 添加其他活动改这里
+                    write_huodong(qq, category)
                 else:
                     # 添加edu按钮后改这里
-                    add_edu(qq,category)
+                    add_edu(qq,category)            
                 break
             except Exception as e:
                 yichang_str = str(e)
