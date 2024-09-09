@@ -62,7 +62,7 @@ def write_huodong(qq, category):
     print("qq:",qq, "正在write_huodong")
     _type = "\u597d\u53cb"
     ''' 周年庆活动逻辑：添加主动发消息 + 天数延长30天 + 添加120额度 + 覆盖'''
-    '''(其他活动这条通用，可以设定是否主动、额度天数、是否覆盖等)'''
+    '''(其他活动这条通用，可以设定是否主动、额度天数、是否覆盖、是否主动发消息等)'''
     # 根据category获取相应的数据库和额度
     if category[0:2] in cat_mapping:
         nanzhu = cat_mapping[category[0:2]]
@@ -142,6 +142,7 @@ def verify():
         file_path = f'web_verify/txtfiles/{category}.txt'
         card_or_edu = "card"
     elif category[-7:-1] == 'huodong':
+        # file_path = f'web_verify/txtfiles/huodong/{category}.txt'
         file_path = f'web_verify/txtfiles/huodong.txt'
         card_or_edu = "huodong" 
     elif category[-4:-1] == 'jika':

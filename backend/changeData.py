@@ -295,8 +295,8 @@ def calculate_date(date):
     date_diff = date_1 - date_buy
     return date_diff.days
 
-
-def change_date(collection, _type: str, qq: str, date = 'today', amount = '31',  add_scheme = 'cover'):
+# 0909把后面写死的类型改了一下，方便季卡等其它形式验证
+def change_date(collection, _type: str, qq: str, date: str, amount: str,  add_scheme :str):
     '''
     修改用户的购买信息。
     add_scheme: default=cover，可选项：cover， extend
@@ -323,9 +323,10 @@ def change_date(collection, _type: str, qq: str, date = 'today', amount = '31', 
     ori_days = entity.get('days', 31) if entity else 0
 
     if add_scheme=='cover':
+        # 0909写死的31改成了amount，已测试
         new_days = amount
     else:
-        new_days = ori_days +amount
+        new_days = ori_days + amount
     
     if date == 'today':
         new_date = str(datetime.date.today())
