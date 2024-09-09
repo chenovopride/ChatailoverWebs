@@ -73,7 +73,7 @@ def write_huodong(qq, category):
         # 添加主动发消息权限
         add_function_permission(limit_collection, _type = _type, qq=qq, fuction='auto_message')
         change_date(limit_collection, _type, qq, 'today', 30, 'cover')
-        add_limit(limit_collection, _type, qq, 120)
+        change_limit(limit_collection, _type, qq, 120)
     else:
         print(f"write_huodong时遇到未知类别: {category}")
         print("开发者 write_huodong(qq, category) 错误")
@@ -141,11 +141,11 @@ def verify():
     if category[-2] == '_' and (category[-1] in ['0', '1']):
         file_path = f'web_verify/txtfiles/{category}.txt'
         card_or_edu = "card"
-    elif category[-7:-1] == 'huodong':
-        # file_path = f'web_verify/txtfiles/huodong/{category}.txt'
+    elif category[-1] == 'g':
         file_path = f'web_verify/txtfiles/huodong.txt'
         card_or_edu = "huodong" 
-    elif category[-4:-1] == 'jika':
+        # 0909修：这里原本的[-4:-1]不包括最后一个字符，因此报错跳到最后一步，读不到文件
+    elif category[-1] == 'a':
         file_path = f'web_verify/txtfiles/jika.txt'
         card_or_edu = "jika" 
     else:
@@ -157,7 +157,7 @@ def verify():
         with open(file_path, 'r') as file:
             keys = file.read().splitlines()
     except FileNotFoundError:
-        print(f"开发者错误，无key文件路径！！{file_path}")
+        print(f"开发者错误，无key文件路径！！{file_path}test:{category}")
         return jsonify({'error': 'Invalid category'}), 400
 
     if key in keys:
