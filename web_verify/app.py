@@ -23,7 +23,8 @@ cat_mapping = {
     # 深空
     "xi": 'sxh',
     "li": 'ls',
-    "yu": 'qy'
+    "yu": 'qy',
+    "qin": 'qc'
 }
 
 # 定义额度的映射
