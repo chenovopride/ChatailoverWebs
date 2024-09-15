@@ -24,7 +24,7 @@ cat_mapping = {
     "xi": 'sxh',
     "li": 'ls',
     "yu": 'qy',
-    "qin": 'qc'
+    "qc": 'qc'
 }
 
 # 定义额度的映射
