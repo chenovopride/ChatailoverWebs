@@ -104,6 +104,31 @@ def write_permission(qq, category):
         print(f"write_permission时遇到未知类别: {category}")
         print("开发者 write_permission(qq, category) 错误")
 
+# 0915补充：此函数用于不同男主月卡额度不同的情况
+def write_permission_sp(qq, category):
+
+    print("qq:",qq, "正在write_permission")
+    _type = "\u597d\u53cb"
+
+    # 根据category获取相应的数据库和额度
+    if category[0:2] in cat_mapping:
+        nanzhu = cat_mapping[category[0:2]]
+        database = client[db_name_to_db[nanzhu]]
+        limit_collection = database['user_limit']
+        print(f"add {nanzhu} card...")
+
+        if category[-1] == '1':
+            # 添加主动发消息权限
+            add_function_permission(limit_collection, _type = _type, qq=qq, fuction='auto_message')
+        # 添加月卡天数和额度+ 额度清0 
+        change_usage(limit_collection, _type, qq, 0)
+        change_date(limit_collection, _type, qq, 'today', 31, 'cover')
+        change_limit(limit_collection, _type, qq, 520)
+
+    else:
+        print(f"write_permission时遇到未知类别: {category}")
+        print("开发者 write_permission(qq, category) 错误")
+
 # 0718 修改的更为简明
 def add_edu(qq, category):
 
@@ -139,7 +164,8 @@ def verify():
 
     # 判断买的月卡还是额度：Replace the path below with the actual path to your txt files
     # 0724修改
-    if category[-2] == '_' and (category[-1] in ['0', '1']):
+    # 0915这里也顺便丑陋的实现了(过滤掉活动男主)，活动结束后再改回来
+    if category[-2] == '_' and (category[-1] in ['0', '1']) and category != 'qc_1':
         file_path = f'web_verify/txtfiles/{category}.txt'
         card_or_edu = "card"
     elif category[-1] == 'g':
@@ -149,6 +175,10 @@ def verify():
     elif category[-1] == 'a':
         file_path = f'web_verify/txtfiles/jika.txt'
         card_or_edu = "jika" 
+        # 这里添加一个新的cat验证是方便新月卡上线优惠时，额度和其他已有的月卡区分开（400&520额度），之后有类似的要求可以改"qc_1"
+    elif category == 'qc_1':
+        file_path = f'web_verify/txtfiles/{category}.txt'
+        card_or_edu = "qc_1" 
     else:
         file_path = f'web_verify/txtfiles/edu_keys_verify/{category}.txt'
         card_or_edu = "edu"
@@ -180,6 +210,9 @@ def verify():
                 elif card_or_edu == "huodong":
                     # 添加其他活动改这里
                     write_huodong(qq, category)
+                elif card_or_edu == "qc_1":
+                    # 添加不同的男主月卡额度改这里，上面"qc_1"记得替换
+                    write_permission_sp(qq, category)    
                 else:
                     # 添加edu按钮后改这里
                     add_edu(qq,category)            
