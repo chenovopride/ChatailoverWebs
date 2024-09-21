@@ -34,6 +34,21 @@
     <br></br>
     <label for="data">请输入您的qq：</label>
     <input type="text" id="data" name="data" required>
+    <br><br>
+    <!-- <label for="queryType">选择查询类型：</label>
+    <select id="queryType" name="queryType">
+        <option value="purchase">购买信息</option>
+        <option value="feature">功能信息</option>
+        <option value="all">所有信息</option>
+    </select> -->
+    <label for="queryType">选择查询类型：</label>
+    <select id="queryTypeSelect" onchange="selectQueryType()">
+        <!-- <option value="" disabled selected>选择查询类型</option> -->
+        <option value="purchase">购买信息</option>
+        <option value="feature">功能信息</option>
+        <!-- <option value="all">所有信息</option> -->
+    </select>
+    
 
     <button onclick="queryBalance()">查询</button>
     <button onclick="refreshData()">清空</button>

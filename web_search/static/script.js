@@ -27,7 +27,6 @@ function selectVersion(version) {
             }
         });
 }
-
 function updateSelectedVersion(version) {
     const buttons = document.querySelectorAll('.version-button');
     buttons.forEach(button => {
@@ -50,6 +49,7 @@ function updateSelectedVersion(version) {
 
 function queryBalance() {
     const data = document.getElementById('data').value;
+    const queryType = document.getElementById('queryTypeSelect').value;
 
     fetch('/query', {
         method: 'POST',
@@ -57,7 +57,8 @@ function queryBalance() {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams({
-            version: document.querySelector('.selected').dataset.version,
+            version: document.querySelector('.version-button.selected').dataset.version,
+            query_type: queryType,
             data: data
         }),
     })
@@ -78,4 +79,29 @@ function displayResults(data) {
         output.innerHTML += `<p>${data[key]}</p>`;
     }
     document.getElementById('clearButton').style.display = 'block';
+}
+
+function selectQueryType() {
+    const queryTypeSelect = document.getElementById('queryTypeSelect');
+    const queryType = queryTypeSelect.value;
+
+    fetch(`/select_query_type/${queryType}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updateSelectedQueryType(data.selected_query_type);
+            }
+        });
+}
+
+function updateSelectedQueryType(queryType) {
+    const inputField = document.getElementById('data');
+    inputField.disabled = queryType === '';
+
+    if (queryType === '') {
+        inputField.value = '';
+    }
+
+    document.getElementById('output').innerHTML = '';
+    document.getElementById('clearButton').style.display = 'none';
 }
