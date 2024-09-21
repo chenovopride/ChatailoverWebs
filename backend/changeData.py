@@ -296,7 +296,7 @@ def calculate_date(date):
     return date_diff.days
 
 # 0909把后面写死的类型改了一下，方便季卡等其它形式验证
-def change_date(collection, _type: str, qq: str, date: str, amount: str,  add_scheme :str):
+# def change_date(collection, _type: str, qq: str, date: str, amount: str,  add_scheme :str):
     '''
     修改用户的购买信息。
     add_scheme: default=cover，可选项：cover， extend
@@ -314,13 +314,24 @@ def change_date(collection, _type: str, qq: str, date: str, amount: str,  add_sc
         raise Exception(f'fuction 参数错误，您传入的date={date}, amount={amount}不在可选项中')
 
     entity = collection.find_one({"type": _type, "id": qq})
-    # 这个情况是 找不到用户的购买信息，相当于还是默认用户/未使用bot的用户，新建一个
-    if entity == None:
-        entity = newLimit(collection, qq, _type)
+    # # 这个情况是 找不到用户的购买信息，相当于还是默认用户/未使用bot的用户，新建一个
+    # if entity == None:
+    #     entity = newLimit(collection, qq, _type)
     
-    # 如果没有找到对应的记录，则初始化date为今天
-    ori_date = entity.get('date', str(datetime.date.today())) if entity else str(datetime.date.today())
-    ori_days = entity.get('days', 31) if entity else 0
+    # # 如果没有找到对应的记录，则初始化date为今天
+    # ori_date = entity.get('date', str(datetime.date.today())) if entity else str(datetime.date.today())
+    # ori_days = entity.get('days', 31) if entity else 0
+
+    if entity is None:
+        if add_scheme == 'extend':
+            ori_days = 0  # 初始化为0
+        else:
+            entity = newLimit(collection, qq, _type)  # 如果是cover，新建记录
+            ori_days = entity.get('days', 31)  # 获取新建记录的默认天数
+        ori_date = str(datetime.date.today())  # 初始化为今天的日期
+    else:
+        ori_date = entity.get('date', str(datetime.date.today()))
+        ori_days = entity.get('days', 31)
 
     if add_scheme=='cover':
         # 0909写死的31改成了amount，已测试
@@ -328,6 +339,70 @@ def change_date(collection, _type: str, qq: str, date: str, amount: str,  add_sc
     else:
         new_days = ori_days + amount
     
+    if date == 'today':
+        new_date = str(datetime.date.today())
+    else:
+        new_date = ori_date
+
+    collection.update_one(
+        {"type": _type, "id": qq},
+        {"$set": {"type": _type, "id": qq, "date": new_date, "days": new_days}},
+        upsert=True,
+    )
+    return True
+
+# 0921修：之前函数里，如果entity为none，ori_days会报类型错误，季卡验证时出现问题，重写一下
+def change_date(collection, _type: str, qq: str, date: str, amount: str, add_scheme: str):
+    '''
+    修改用户的购买信息。
+    add_scheme: default=cover，可选项：cover， extend
+    amount: 天数
+    date：default= 'today' 代表更新为今日时间
+
+    当 add_scheme = cover(default), date = None, amount = 31代表购买了月卡天数设置为从今天开始的31天
+    当 add_scheme = extend, date = None, amount = 10, 代表在原本的基础上延长10天
+    '''
+    if date not in [None, 'today']:
+        raise Exception(f'date参数错误，date可选项有： None, today')
+    if add_scheme not in ["cover", "extend"]:
+        raise Exception(f'add_scheme参数错误，add_scheme可选项有："cover", "extend"')
+    if date == 'today' and amount == 0:
+        raise Exception(f'fuction 参数错误，您传入的date={date}, amount={amount}不在可选项中')
+
+    # 确保 amount 是整数类型
+    try:
+        amount = int(amount)
+    except ValueError:
+        raise Exception(f'amount参数错误，必须是整数')
+
+    entity = collection.find_one({"type": _type, "id": qq})
+
+    # 处理找不到用户记录的情况
+    if entity is None:
+        if add_scheme == 'extend':
+            # 在extend模式下，无法找到用户时，初始化天数为0
+            ori_days = 0
+        else:
+            # cover模式下，新建用户记录
+            entity = newLimit(collection, qq, _type)
+            ori_days = entity.get('days', 31)  # 新建记录的默认天数
+        ori_date = str(datetime.date.today())  # 默认使用今天的日期
+    else:
+        # 获取已有记录中的天数和日期，确保ori_days是整数
+        ori_days = entity.get('days')
+        if ori_days is None and entity is not None:
+            ori_days = 0  # 如果天数不存在，初始化为0天int值
+        else:
+            ori_days = int(ori_days)  # 确保天数是整数
+
+        ori_date = entity.get('date', str(datetime.date.today()))
+
+    if add_scheme == 'cover':
+        new_days = amount  # 覆盖时直接设置为传入的天数
+    else:
+        # 在extend模式下，将现有天数与amount相加
+        new_days = ori_days + amount
+
     if date == 'today':
         new_date = str(datetime.date.today())
     else:

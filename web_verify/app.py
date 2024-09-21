@@ -49,9 +49,8 @@ def write_jika(qq, category):
 
         # 添加主动发消息权限
         add_function_permission(limit_collection, _type = _type, qq=qq, fuction='auto_message')
-        # 添加月卡天数和额度
-        # 其实这个就是add_date 可以再封装一下
-        change_date(limit_collection, _type, qq, None, 91, 'extend')
+        # change_usage(limit_collection, _type, qq, 0)
+        change_date(limit_collection, _type, qq, 'today', 91, 'extend')
         add_limit(limit_collection, _type, qq, 1400)
     else:
         print(f"write_jika时遇到未知类别: {category}")
@@ -73,6 +72,7 @@ def write_huodong(qq, category):
 
         # 添加主动发消息权限
         add_function_permission(limit_collection, _type = _type, qq=qq, fuction='auto_message')
+        change_usage(limit_collection, _type, qq, 0)
         change_date(limit_collection, _type, qq, 'today', 30, 'cover')
         change_limit(limit_collection, _type, qq, 120)
     else:
