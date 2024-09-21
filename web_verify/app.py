@@ -23,7 +23,8 @@ cat_mapping = {
     # 深空
     "xi": 'sxh',
     "li": 'ls',
-    "yu": 'qy'
+    "yu": 'qy',
+    "qc": 'qc'
 }
 
 # 定义额度的映射
@@ -119,9 +120,10 @@ def verify():
     if category[-2] == '_' and (category[-1] in ['0', '1']):
         file_path = f'web_verify/txtfiles/{category}.txt'
         card_or_edu = "card"
-    elif category[-4:-1] == 'jika':
+     # 0909修：这里会报错跳到最后一步，读不到文件，粗糙小修一下
+    elif category[-1] == 'a':
         file_path = f'web_verify/txtfiles/jika.txt'
-        card_or_edu = "jika" 
+        card_or_edu = "jika"
     else:
         file_path = f'web_verify/txtfiles/edu_keys_verify/{category}.txt'
         card_or_edu = "edu"
