@@ -107,19 +107,15 @@ def write_permission(qq, category):
 # 0915补充：此函数用于不同男主月卡额度不同的情况
 def write_permission_sp(qq, category):
 
-    print("qq:",qq, "正在write_permission")
+    print("qq:",qq, "正在write_permission_sp")
     _type = "\u597d\u53cb"
-
-    # 根据category获取相应的数据库和额度
-    if category[0:2] in cat_mapping:
-        nanzhu = cat_mapping[category[0:2]]
-        database = client[db_name_to_db[nanzhu]]
-        limit_collection = database['user_limit']
-        print(f"add {nanzhu} card...")
-
-        if category[-1] == '1':
-            # 添加主动发消息权限
-            add_function_permission(limit_collection, _type = _type, qq=qq, fuction='auto_message')
+    # 更改对应活动人物‘db_name_to_db’名称
+    HuoDongRenWu = 'qc'
+    database = client[db_name_to_db[HuoDongRenWu]]
+    limit_collection = database['user_limit']
+    if category[-1] == '1':
+        # 添加主动发消息权限
+        add_function_permission(limit_collection, _type = _type, qq=qq, fuction='auto_message')
         # 添加月卡天数和额度+ 额度清0 
         change_usage(limit_collection, _type, qq, 0)
         change_date(limit_collection, _type, qq, 'today', 31, 'cover')
