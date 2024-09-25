@@ -83,15 +83,15 @@ def newInfo(info_collection, user_qq= "default", user_name= "你的女朋友",us
     # 设置user_info表插入值
     if info_data == None:
         info_data = {
-            "id": user_qq,
-            "name": user_name,
-            "info": user_info,
-            "city": None,
-            "city_code": None,   # 0702新添加的 数据格式是str
-            "auto_message_on": 1,
-            "custom_identity_on": 1,
-            "custom_action_on": 1,
-            "voice_on": 1,
+            "id": user_qq,    #用户
+            "name": "你的女朋友",   #默认姓名
+            "info": "一名女性", #默认设定
+            "city": None,   #默认城市无
+            "city_code": 0,  #默认城市id无
+            "auto_message_on": 1,   #默认开启主动发消息
+            "custom_identity_on": 1,    #默认开启自定义身份
+            "custom_action_on": 1,  #默认开启动描
+            "voice_on": 1,  #后面的还没做
             "sing_on": 1,
             "meme_on": 1,
             "img_rec_on": 1,
@@ -101,7 +101,7 @@ def newInfo(info_collection, user_qq= "default", user_name= "你的女朋友",us
             "auto_weather_on": 1,
             "group_on": 1,
             "game_on": 1,
-            "version": "buy1"
+            "version": "buy1"   #默认付费版1
         }
     else:
         info_data = info_data
@@ -129,16 +129,15 @@ def newLimit(limit_collection, user_qq= "default", type = "\u597d\u53cb",limit_d
             "type": type,
             # 新用户默认20
             "rate": 20,
-            "date": None,
-            "days": None,
+            "date": str(datetime.date.today()),
+            "days": 31,
             "count": 0,
             "free_rate": 400, # 0629 新添加的，代表免费版用户拥有的额度
             "free_count":0, # 0629 新添加的，代表免费版用户已经使用的额度
             "wd_key": 'wd_key', # 0629 新添加的，代表用户最近一次购买信息验证的券码
-            # 这里开始就是功能信息，bool值，仅有01
             "auto_message": 0,
             "custom_identity":1,
-            "custom_action":0, # 0725 自定义动作描述由于目前只给定制版用户，所以关闭默认权限
+            "custom_action":0,
             "voice":0,
             "sing":0,
             "meme":0,
