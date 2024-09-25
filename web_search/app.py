@@ -96,7 +96,7 @@ def query_balance():
     count_value = user_limit.get("count", 0)
     rate_value = user_limit.get("rate", 0)
     yueka_days = user_limit.get("days", 0)
-        
+    
     # 获取当前日期
     current_date = str(datetime.date.today())
     date_format = "%Y-%m-%d"
@@ -104,13 +104,20 @@ def query_balance():
     date_bought = datetime.datetime.strptime(date_value, date_format).date() if date_value else date_now
     days_passed = (date_now - date_bought).days
     # 日期和额度都不为零
+    # 0925 如实显示查询结果,如果为负数就报错
     if yueka_days is not None:
-        res_date = max(0, yueka_days - days_passed)
+        res_date = yueka_days - days_passed
+        if res_date < 0:
+            print('id',qq_id,'剩余天数：',res_date)
+        return jsonify({'error': f'{qq_id}剩余天数有误，请联系开发排查错误情况'})
     else:
-        res_date = 31  # 设置默认值为31好了
+        res_date = 31  # 没验证成功，则设置默认值为31
         
     if rate_value is not None:
-        res_value = max(0, rate_value - count_value)
+        res_value =  rate_value - count_value
+        if res_value < 0:
+            print('id',qq_id,'剩余额度：',res_value)
+        return jsonify({'error': f'{qq_id}剩余额度有误，请联系开发排查错误情况'})
     else:
         res_value = 400 # 如果没有验证上，依然加默认值400额度
 
