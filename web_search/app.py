@@ -105,19 +105,30 @@ def query_balance():
     days_passed = (date_now - date_bought).days
     # 日期和额度都不为零
     # 0925 如实显示查询结果,如果为负数就报错
+    # 1124我不理解为什么>0也会跳到111-113行，但明天再看
+    # if yueka_days is not None:
+    #     res_date = yueka_days - days_passed
+    #     if res_date < 0:
+    #         print('id',qq_id,'剩余天数：',res_date)
+    #     return jsonify({'error': f'{qq_id}购买距离{days_passed}和剩余天数{res_date}有误，请联系开发排查错误情况'})
+    # else:
+    #     res_date = 31  # 没验证成功，则设置默认值为31
+        
+    # if rate_value is not None:
+    #     res_value =  rate_value - count_value
+    #     if res_value <= 0:
+    #         print('id',qq_id,'剩余额度：',res_value)
+    #     return jsonify({'error': f'{qq_id}剩余额度有误，请联系开发排查错误情况'})
+    # else:
+    #     res_value = 400 # 如果没有验证上，依然加默认值400额度
+
     if yueka_days is not None:
         res_date = yueka_days - days_passed
-        if res_date < 0:
-            print('id',qq_id,'剩余天数：',res_date)
-        return jsonify({'error': f'{qq_id}剩余天数有误，请联系开发排查错误情况'})
     else:
         res_date = 31  # 没验证成功，则设置默认值为31
         
     if rate_value is not None:
         res_value =  rate_value - count_value
-        if res_value < 0:
-            print('id',qq_id,'剩余额度：',res_value)
-        return jsonify({'error': f'{qq_id}剩余额度有误，请联系开发排查错误情况'})
     else:
         res_value = 400 # 如果没有验证上，依然加默认值400额度
 
