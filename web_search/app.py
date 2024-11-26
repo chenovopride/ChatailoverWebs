@@ -105,7 +105,7 @@ def query_balance():
     days_passed = (date_now - date_bought).days
     # 日期和额度都不为零
     # 0925 如实显示查询结果,如果为负数就报错
-    # 1124我不理解为什么>0也会跳到111-113行，但明天再看
+    # 1124我不理解为什么>0也会跳到111-113行，但明天再看 - 已联系陈宝解决 本段代码被弃用。下次更新时可以删除这些了。
     # if yueka_days is not None:
     #     res_date = yueka_days - days_passed
     #     if res_date < 0:
@@ -125,12 +125,14 @@ def query_balance():
     if yueka_days is not None:
         res_date = yueka_days - days_passed
     else:
-        res_date = 31  # 没验证成功，则设置默认值为31
+        return jsonify({'error': f'{qq_id} 月卡天数数据有误，请联系开发排查错误情况'})
+        # res_date = 31  # 没验证成功，则设置默认值为31 # 取消非真实显示
         
     if rate_value is not None:
         res_value =  rate_value - count_value
     else:
-        res_value = 400 # 如果没有验证上，依然加默认值400额度
+        return jsonify({'error': f'{qq_id} 额度数据有误，请联系开发排查错误情况'})
+        # res_value = 400 # 如果没有验证上，依然加默认值400额度  # 取消非真实显示
 
     # 获取功能
     boolean_fields = {k: v for k, v in user_limit.items() if isinstance(v, bool)}
