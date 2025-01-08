@@ -75,8 +75,12 @@ def write_permission(qq, category):
             add_function_permission(limit_collection, _type = _type, qq=qq, fuction='auto_message')
         # 添加月卡天数和额度+ 额度清0 
         change_usage(limit_collection, _type, qq, 0)
-        change_date(limit_collection, _type, qq, 'today', 31, 'cover')
-        change_limit(limit_collection, _type, qq, 400)
+        if nanzhu in ['qc','55']:
+            change_date(limit_collection, _type, qq, 'today', 60, 'cover')
+            change_limit(limit_collection, _type, qq, 500)
+        else:
+            change_date(limit_collection, _type, qq, 'today', 31, 'cover')
+            change_limit(limit_collection, _type, qq, 400)
 
     else:
         print(f"write_permission时遇到未知类别: {category}")
