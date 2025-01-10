@@ -73,6 +73,8 @@ def query_balance():
     elif version == '秦彻':
         # db = databases['dbQC']
         database = client[db_name_to_db['qc']]
+    elif version == '李泽言':
+        database = client[db_name_to_db['lzy']]
     else:
         return jsonify({'error': '未上线的版本'})
 
