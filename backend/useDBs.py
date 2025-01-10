@@ -170,4 +170,68 @@ def newShenkongDB(client):
 # 打印确认信息
     print("shekongDB and collections created successfully.")
 
+# 0110更新：上线恋与数据库+李泽言
+def newLianyuDB(client):
+# 创建恋与男主数据库，均插入初始数据
+    LZYdb = client['LZY_DB']
+# 创建 user_info 集合并插入初始数据
+    info_collectionLZY = LZYdb['user_info']
+# 设置user_info表默认值
+    info_data = {
+        "id": "921365773",
+        "name": "test1",
+        "info": "机器人",
+        "city": "美国,加利福尼亚州,洛杉矶",
+        "city_code": None,
+        "auto_message_on": 1,
+        "custom_identity_on": 1,
+        "custom_action_on": 1,
+        "voice_on": 1,
+        "sing_on": 1,
+        "meme_on": 1,
+        "img_rec_on": 1,
+        "custom_sched_on": 1,
+        "menstrual_on": 1,
+        "custom_sleep_on": 1,
+        "auto_weather_on": 1,
+        "group_on": 1,
+        "game_on": 1,
+        "version": "free1"
+}
+#执行初始化光夜男主DB命令
+    info_collectionLZY.insert_one(info_data)
+
+# 同理创建 user_limit 集合并插入初始数据
+    limit_collectionLZY = LZYdb['user_limit']
+
+# 设置user_limit表默认值
+    limit_data = {
+        "id": "921365773",
+        "type": "friends",
+        "rate": None,
+        "date": None,
+        "days": None,
+        "count": 0,
+        "free_rate": 400,
+        "free_count":0,
+        "wd_key": 'wd_key',
+        "auto_message": 0,
+        "custom_identity":1,
+        "custom_action":1,
+        "voice":0,
+        "sing":0,
+        "meme":0,
+        "img_rec":0,
+        "custom_sched":0,
+        "menstrual":1,
+        "custom_sleep":0,
+        "auto_weather":0,
+        "group":0,
+        "game":1,
+        "custom":0
+}
+    limit_collectionLZY.insert_one(limit_data)
+    
+# 打印确认信息
+    print("shekongDB and collections created successfully.")
 

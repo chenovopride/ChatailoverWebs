@@ -16,6 +16,8 @@ db_name_to_db = {
     'sxh': 'SXH_DB',
     'xyz':'XYZ_DB',
     'qc': 'QC_DB',
+    # 恋与
+    'lzy': 'LZY_DB',
     # 开发者个人测试数据库请在这里添加
     'cyxTest': 'TestDB'
 }
@@ -33,6 +35,8 @@ bot_paths = {
     'sxh': 'C:\\0-shenkong_bot\\sxh',
     'xyz': 'C:\\0-shenkong_bot\\xyz',
     'qc': 'C:\\0-shenkong_bot\\qc',
+    # 恋与
+    'lzy':'C:\\lianyu_bot\\lzy',
     # 开发者个人测试路径请在这里添加
     'cyxTest': 'D:\\AILover\\code\\loveBot1.2'
 }
