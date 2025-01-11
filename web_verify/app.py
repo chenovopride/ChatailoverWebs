@@ -43,7 +43,7 @@ def write_jika(qq, category):
     _type = "\u597d\u53cb"
     ''' 季卡逻辑：添加主动发消息 + 天数延长91天（不覆盖原本的购买信息）+ 添加1400额度'''
     # 根据category获取相应的数据库和额度
-    if category[0:3] in cat_mapping:
+    if category[0:2] in cat_mapping or category[0:3] in cat_mapping:
         nanzhu = cat_mapping[category[0:3]]
         database = client[db_name_to_db[nanzhu]]
         limit_collection = database['user_limit']
@@ -59,7 +59,7 @@ def write_jika(qq, category):
         print(f"write_jika时遇到未知类别: {category}")
         print("开发者 write_jika(qq, category) 错误")
         
-# 25/0110更新 新增lzy 将所有category[0:2]改为取category[0:3]
+# 25/0111更新 新增lzy 将所有category[0:2]改为取category[0:2]或[0:3]
 # 0724 更新 待测试
 def write_permission(qq, category):
 
@@ -67,7 +67,7 @@ def write_permission(qq, category):
     _type = "\u597d\u53cb"
 
     # 根据category获取相应的数据库和额度
-    if category[0:3] in cat_mapping:
+    if category[0:2] in cat_mapping or category[0:3] in cat_mapping:
         nanzhu = cat_mapping[category[0:3]]
         database = client[db_name_to_db[nanzhu]]
         limit_collection = database['user_limit']
@@ -93,7 +93,7 @@ def add_edu(qq, category):
     _type = "\u597d\u53cb"
 
     # 处理类别
-    if category[0:3] in cat_mapping:
+    if category[0:2] in cat_mapping or category[0:3] in cat_mapping:
         nanzhu = cat_mapping[category[0:3]]
         database = client[db_name_to_db[nanzhu]]
         limit_collection = database['user_limit']
