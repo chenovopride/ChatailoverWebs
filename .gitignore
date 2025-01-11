@@ -30,7 +30,8 @@ web_verify/*.log
 
 # 查询query网站
 
-
+# logs
+logs
 
 # 用户自行配置
 
