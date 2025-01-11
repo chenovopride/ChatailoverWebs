@@ -35,7 +35,7 @@ amount_mapping = {
     "edu_100": 100,
     "edu_200": 200,
 }
-
+# 25/0111cz：添加了三字男主lzy，因此修改重写了所有判断为category[0:2]的逻辑。
 # 0724更新 待测试
 def write_jika(qq, category):
 
@@ -43,35 +43,50 @@ def write_jika(qq, category):
     _type = "\u597d\u53cb"
     ''' 季卡逻辑：添加主动发消息 + 天数延长91天（不覆盖原本的购买信息）+ 添加1400额度'''
     # 根据category获取相应的数据库和额度
-    if category[0:2] in cat_mapping or category[0:3] in cat_mapping:
-        nanzhu = cat_mapping[category[0:3]]
-        database = client[db_name_to_db[nanzhu]]
-        limit_collection = database['user_limit']
-        print(f"add {nanzhu} jika ...")
+    # 单独提取匹配的键
+    matched_key = None
+    if category[0:2] in cat_mapping:
+        matched_key = category[0:2]
+    elif category[0:3] in cat_mapping:
+        matched_key = category[0:3]
 
-        # 添加主动发消息权限
-        add_function_permission(limit_collection, _type = _type, qq=qq, fuction='auto_message')
-        # 添加月卡天数和额度
-        # 其实这个就是add_date 可以再封装一下
+    # 如果匹配成功，执行操作
+    if matched_key:
+        nanzhu = cat_mapping[matched_key]  
+        database = client[db_name_to_db[nanzhu]]  
+        limit_collection = database['user_limit'] 
+
+        print(f"Adding {nanzhu} jika ...")  
+    # 添加主动发消息权限
+        add_function_permission(limit_collection, _type=_type, qq=qq, fuction='auto_message')
+    # 添加月卡天数和额度
+    # 调用封装好的日期修改和额度增加方法
         change_date_1(limit_collection, _type, qq, 'today', 91, 'extend')
         add_limit(limit_collection, _type, qq, 1400)
     else:
+    # 未知类别处理
         print(f"write_jika时遇到未知类别: {category}")
         print("开发者 write_jika(qq, category) 错误")
         
-# 25/0111更新 新增lzy 将所有category[0:2]改为取category[0:2]或[0:3]
 # 0724 更新 待测试
 def write_permission(qq, category):
 
     print("qq:",qq, "正在write_permission")
     _type = "\u597d\u53cb"
+    # 单独提取匹配的键
+    matched_key = None
+    if category[0:2] in cat_mapping:
+        matched_key = category[0:2]
+    elif category[0:3] in cat_mapping:
+        matched_key = category[0:3]
 
-    # 根据category获取相应的数据库和额度
-    if category[0:2] in cat_mapping or category[0:3] in cat_mapping:
-        nanzhu = cat_mapping[category[0:3]]
-        database = client[db_name_to_db[nanzhu]]
-        limit_collection = database['user_limit']
-        print(f"add {nanzhu} card...")
+    # 如果匹配成功，执行操作
+    if matched_key:
+        nanzhu = cat_mapping[matched_key]  
+        database = client[db_name_to_db[nanzhu]]  
+        limit_collection = database['user_limit'] 
+
+        print(f"Adding {nanzhu} card...")  # 输出日志
 
         if category[-1] == '1':
             # 添加主动发消息权限
@@ -86,6 +101,7 @@ def write_permission(qq, category):
             change_limit(limit_collection, _type, qq, 400)
 
     else:
+    # 未知类别处理
         print(f"write_permission时遇到未知类别: {category}")
         print("开发者 write_permission(qq, category) 错误")
 
@@ -96,17 +112,26 @@ def add_edu(qq, category):
 
     _type = "\u597d\u53cb"
 
-    # 处理类别
-    if category[0:2] in cat_mapping or category[0:3] in cat_mapping:
-        nanzhu = cat_mapping[category[0:3]]
-        database = client[db_name_to_db[nanzhu]]
-        limit_collection = database['user_limit']
-        print(f"add {nanzhu} edu...")
-        for key, value in amount_mapping.items():
-            if key in category:
-                add_limit(limit_collection, _type, qq, value)
-                # rate_add_edu(usage_db, date_start_db, limit_db, qq, _type, value)
+    # 单独提取匹配的男主名称
+    matched_key = None
+    if category[0:2] in cat_mapping:
+        matched_key = category[0:2]
+    elif category[0:3] in cat_mapping:
+        matched_key = category[0:3]
+
+    # 如果有匹配项，执行逻辑
+    if matched_key:
+        nanzhu = cat_mapping[matched_key] 
+        database = client[db_name_to_db[nanzhu]]  
+        limit_collection = database['user_limit'] 
+
+    print(f"Adding {nanzhu} edu...") 
+    for key, value in amount_mapping.items():
+        if key in category:
+            # 调用添加额度逻辑
+            add_limit(limit_collection, _type, qq, value)
     else:
+    # 未知类别处理
         print(f"添加额度时遇到未知类别: {category}")
 
 @app.route('/')
