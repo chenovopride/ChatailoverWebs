@@ -299,7 +299,7 @@ def calculate_date(date):
     return date_diff.days
 
 # 0909把后面写死的类型改了一下，方便季卡等其它形式验证
-def change_date(collection, _type: str, qq: str, date: str, amount: str,  add_scheme :str):
+def change_date(collection, _type: str, qq: str, date: str, amount: int,  add_scheme :str):
     '''
     修改用户的购买信息。
     add_scheme: default=cover，可选项：cover， extend
@@ -343,7 +343,7 @@ def change_date(collection, _type: str, qq: str, date: str, amount: str,  add_sc
     )
     return True
 
-# 适用于extend模式的change_date补丁
+# 适用于extend模式的change_date补丁，仅用于季卡 需要再测试（后面再优化一下date增加函数 - cyx）
 # 0921修：之前函数里，如果entity为none，ori_days会报类型错误，季卡验证时出现问题，重写一下
 def change_date_1(collection, _type: str, qq: str, date: str, amount: str, add_scheme: str):
     '''
@@ -407,6 +407,10 @@ def change_date_1(collection, _type: str, qq: str, date: str, amount: str, add_s
         upsert=True,
     )
     return True
+
+def data_update(collection, _type: str, qq: str, data: str):
+    # 将过期用户的date重新置为今天，并且将days设置为30，代表30天的使用权。还未实现，请勿使用
+    pass
 
 # usage方面：一般是增减固定值 改count & free_count
 def add_usage(collection, _type: str, qq: str, amount: int):
