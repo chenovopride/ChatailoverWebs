@@ -96,7 +96,7 @@ else:
     if genre == "特定用户":
         user_id = st.text_input('用户qq')
 
-    option = st.selectbox("选择男主",("00", "11", "55", "66", "77", "qy", "ls", "sxh", "qc", "xyz"))
+    option = st.selectbox("选择男主",("00", "11", "55", "66", "77", "qy", "ls", "sxh", "qc", "xyz", "lzy"))
     days_all = st.number_input('天数',step =1)
     amount_all = st.number_input('额度(必须为10的倍数)',step =10)
     if st.button('提交用户补偿'):
@@ -133,7 +133,7 @@ else:
         user_id_fun = st.text_input('用户qq',key="user_function_input")#解决unique key的问题（2024/11/22改动）
     close_flage = st.radio("打开还是关闭？",["打开=1", "关闭=0"])
 
-    option_2 = st.selectbox("选择男主数据库",("00", "11", "55", "66", "77", "qy", "ls", "sxh", "qc", "xyz"))
+    option_2 = st.selectbox("选择男主数据库",("00", "11", "55", "66", "77", "qy", "ls", "sxh", "qc", "xyz", "lzy"))
     fuction_name = st.selectbox("选择您要打开或者关闭的功能",("auto_message", "custom_identity", "custom_action", "voice", 
                                                  "sing", "meme", "img_rec", "custom_sched", "menstrual", "custom_sleep",
                                                  "auto_weather", "group", "game", "custom"))
@@ -160,9 +160,9 @@ else:
 
     
     st.header('节假日重置20体验额度')
-    st.write('未购买用户重置20体验额度, 购买的用户赠送20体验额度。')
+    st.write('未购买用户重置20体验额度(当前无法为未购买用户重置天数), 购买的用户赠送20体验额度。')
     st.write('tinydb后端等待时间较久，而且容易错误，如果出错，联系开发重置即可')
-    master_name_reset = st.selectbox("选择游戏",("光夜", "深空(请勿使用)"))
+    master_name_reset = st.selectbox("选择游戏",("光夜", "深空", "恋与"))
     # gift_limit = st.number_input('赠送额度(必须为10的倍数)', min_value=0)
     gift_limit = 20
     if st.button('提交重置'):

@@ -59,7 +59,7 @@ def compensate( man, user_id, days_all, amount_all, backend ='mongodb'):
     date_status = True
     rate_status = True
 
-    if backend == 'tinydb':
+    if backend == 'tinydb': # 已弃用
         if user_id == 'all':
             # 所有用户补偿
             if days_all!= 0:
@@ -131,6 +131,25 @@ def reset_holiday(game, gift_limit_count = 20, backend ='mongodb'):
         else:
             print('还未上线！')
             return False
+    elif backend == 'mongodb':
+        if game == '光夜':
+            # TODO cyx - 这里添加免费用户/月卡过期用户的天数重置
+            res1 = compensate('00', 'all', 0, 20, backend ='mongodb')
+            res2 = compensate('11', 'all', 0, 20, backend ='mongodb')
+            res3 = compensate('55', 'all', 0, 20, backend ='mongodb')
+            res4 = compensate('66', 'all', 0, 20, backend ='mongodb')
+            res5 = compensate('77', 'all', 0, 20, backend ='mongodb')
+            return res1 and res2 and res3 and res4 and res5
+        elif game == '深空':
+            res1 = compensate('ls', 'all', 0, 20, backend ='mongodb')
+            res2 = compensate('qc', 'all', 0, 20, backend ='mongodb')
+            res3 = compensate('xyz', 'all', 0, 20, backend ='mongodb')
+            res4 = compensate('qy', 'all', 0, 20, backend ='mongodb')
+            res5 = compensate('sxh', 'all', 0, 20, backend ='mongodb')
+            return res1 and res2 and res3 and res4 and res5
+        elif game == '恋与':
+            res1 = compensate('lzy', 'all', 0, 20, backend ='mongodb')
+            return res1
     else:
         print('还未上线！')
         return False
